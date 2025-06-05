@@ -62,13 +62,17 @@ loginForm.onsubmit = (e) => {
   if (usersTasks[username] && usersTasks[username].password === password) {
     currentUser = { username: username }; // Define o usuário logado
     loginMessage.textContent = ""; // Limpa qualquer mensagem de erro
-    loadTasksForCurrentUser(); // Carrega as tarefas do usuário
-    showKanbanApp(); // Mostra o quadro Kanban
+
+    // Armazena o usuário logado no sessionStorage ou localStorage antes de redirecionar
+    // Isso é crucial para que index.html saiba quem está logado
+    sessionStorage.setItem("currentUser", JSON.stringify(currentUser)); // Usando sessionStorage para limpar após fechar o navegador
+
+    // Redireciona para a página do Kanban
+    window.location.href = "index.html"; // Redireciona para a página do Kanban
   } else {
     loginMessage.textContent = "Usuário ou senha inválidos.";
   }
 };
-
 // Lógica de Registro (cria um novo usuário no localStorage)
 registerBtn.onclick = () => {
   const username = usernameInput.value.trim();
