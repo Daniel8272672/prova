@@ -1,0 +1,8 @@
+[
+    {
+        "id_produto": 1,
+        "nome_produto": "ee",
+        "preco": 21.0,
+        "id_categoria_associada": 1
+    }
+]
