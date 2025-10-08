@@ -1,3 +1,0 @@
-C:\Users\Aluno\AppData\Roaming\Python\Python313\Scripts\django-admin startproject config
-python manage.py migrate
-python manage.py makemigrations
