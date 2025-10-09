@@ -29,6 +29,47 @@ def adicionar_tarefa(request):
         return redirect ('listar_tarefas')
     return render(request, 'tarefas/form_tarefa.html')
 
+# def alterar_tarefa(request, tarefa_id):
+#     tarefa=get_object_or_404(Tarefa, pk=tarefa_id)
+#     if request.method == "POST":
+#         tarefa.titulo = request.POST.get('titulo')
+#         tarefa.descricao = request.POST.get('descricao')
+#         tarefa.save()#salva as operacoes
+#         return redirect ('listar_tarefas')
+#     return render(request, 'tarefas/form_tarefa.html',{'tarefa' : tarefa})
+
+def alterar_tarefa(request, tarefa_id):
+    # 1. Busca a tarefa específica que será editada ou retorna um erro 404 se não existir.
+    tarefa = get_object_or_404(Tarefa, pk=tarefa_id)
+    
+
+    if request.method == 'POST':
+        # 3. Pega os dados enviados pelo formulário.
+        titulo = request.POST.get('titulo')
+        descricao = request.POST.get('descricao')
+        projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado no <select>.
+        concluida = request.POST.get('concluida') == 'on' # Checkbox retorna 'on' se marcado.
+
+
+        # 5. Atualiza os campos do objeto 'tarefa' que já foi carregado do banco.
+        tarefa.titulo = titulo
+        tarefa.descricao = descricao
+        tarefa.concluida = concluida
+        
+        # 6. Salva as alterações no banco de dados.
+        tarefa.save()
+        
+        # 7. Redireciona o usuário para a lista de tarefas após a alteração.
+        return redirect('listar_tarefas')
+
+    # 8. Se o método for GET (primeiro acesso à página de edição):
+    #    Renderiza o formulário, passando a tarefa para preencher os campos
+    #    e a lista de projetos para montar o seletor.
+    context = {
+        'tarefa': tarefa,
+    }
+    return render(request, 'tarefas/form_tarefa.html', context)
+
 #métodos http
 # POST: Envia dados para o servidor 
 # GET: Busca dados no servidor
