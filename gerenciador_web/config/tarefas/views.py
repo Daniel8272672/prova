@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Tarefa
-
+from projetos.models import Projeto
 
 def listar_tarefas(request):
     #1. A busca no banco de dados
@@ -22,12 +22,15 @@ def detalhe_tarefa(request, tarefa_id):
     return render (request, 'tarefas/detalhe.html', {'tarefa': tarefa})
 
 def adicionar_tarefa(request):
+    projetos = Projeto.objects.all()
     if request.method == 'POST':
         titulo = request.POST.get('titulo')
         descricao = request.POST.get('descricao')
-        Tarefa.objects.create(titulo=titulo, descricao=descricao)
+        projeto_id = request.POST.get('projeto')
+        projeto_selecionado = Projeto.objects.get(pk = projeto_id)
+        Tarefa.objects.create(titulo=titulo, descricao=descricao, projeto=projeto_selecionado)
         return redirect ('listar_tarefas')
-    return render(request, 'tarefas/form_tarefa.html')
+    return render(request, 'tarefas/form_tarefa.html', {'projetos':projetos})
 
 # def alterar_tarefa(request, tarefa_id):
 #     tarefa=get_object_or_404(Tarefa, pk=tarefa_id)
@@ -39,6 +42,7 @@ def adicionar_tarefa(request):
 #     return render(request, 'tarefas/form_tarefa.html',{'tarefa' : tarefa})
 
 def alterar_tarefa(request, tarefa_id):
+    projetos = Projeto.objects.all()
     # 1. Busca a tarefa específica que será editada ou retorna um erro 404 se não existir.
     tarefa = get_object_or_404(Tarefa, pk=tarefa_id)
     
@@ -47,14 +51,18 @@ def alterar_tarefa(request, tarefa_id):
         # 3. Pega os dados enviados pelo formulário.
         titulo = request.POST.get('titulo')
         descricao = request.POST.get('descricao')
+        projeto_id = request.POST.get('projeto')
         projeto_id = request.POST.get('projeto') # Pega o ID do projeto selecionado no <select>.
         concluida = request.POST.get('concluida') == 'on' # Checkbox retorna 'on' se marcado.
+        projeto_selecionado = get_object_or_404(Projeto ,pk = projeto_id)
+
 
 
         # 5. Atualiza os campos do objeto 'tarefa' que já foi carregado do banco.
         tarefa.titulo = titulo
         tarefa.descricao = descricao
         tarefa.concluida = concluida
+        tarefa.projeto = projeto_selecionado
         
         # 6. Salva as alterações no banco de dados.
         tarefa.save()
@@ -67,6 +75,7 @@ def alterar_tarefa(request, tarefa_id):
     #    e a lista de projetos para montar o seletor.
     context = {
         'tarefa': tarefa,
+        'projetos':projetos,
     }
     return render(request, 'tarefas/form_tarefa.html', context)
 
