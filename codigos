@@ -1,0 +1,20 @@
+ django-admin startproject config
+
+python -m django startproject config
+
+ cd .\gerenciador_web
+
+ cd .\config\
+
+ python manage.py runserver
+
+python manage.py startapp (nome do seu projeto)
+
+
+
+
+
+
+
+python manage.py makemigrations
+python manage.py migrate	
